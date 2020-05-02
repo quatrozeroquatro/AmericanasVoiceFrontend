@@ -8,7 +8,7 @@ function HomeScreen() {
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'space-around' }}>
       <Image style={{width: "90%", resizeMode: "stretch"}} source={require("./assets/home-banner1.png")} />
       <Image style={{width: "90%", resizeMode: "stretch"}} source={require("./assets/home-banner2.png")} />
-      <Image  style={{width: "100%", height: 280, resizeMode: "stretch"}} source={require("./assets/home-banner-slider.png")} />
+      <Image  style={{width: "100%", height: 300, resizeMode: "stretch"}} source={require("./assets/home-banner-slider.png")} />
       <Image style={{width: "90%", resizeMode: "stretch"}} source={require("./assets/home-banner-iphone.png")} />
     </View>
   );
