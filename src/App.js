@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react';
-import { View, Text, StyleSheet, SafeAreaView, Image } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import { TouchableOpacity, Button, Modal, View, Text, StyleSheet, SafeAreaView, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { requestPermission } from './Permissions';
@@ -7,7 +7,20 @@ import SystemSetting from "react-native-system-setting";
 
 import Voice from '@react-native-community/voice';
 
+const AssistRequestView = ({visible, onClose}) => {
+
+  return <Modal visible={visible} transparent={true}>
+    <View style={{flex: 1, backgroundColor: "rgba(0,0,0,.90)", justifyContent: "center", alignItems: "center"}}>
+      <Image source={require("./assets/assistente-logo.png")} />
+      <TouchableOpacity onPress={onClose} style={{padding: 20}}>
+        <Text style={{color: "white"}}>Fechar</Text>
+      </TouchableOpacity>
+    </View>
+  </Modal>
+}
+
 function HomeScreen() {
+  const [assistRequest, setAssistRequest] = useState(false);
   
   useEffect(() => {
     let interval1, interval2, timeout;
@@ -32,6 +45,7 @@ function HomeScreen() {
           console.log( "XABLAU", v);
           if (v.toLowerCase() === "olá americanas") {
             alert("Match!");
+            setAssistRequest(true);
           }
         });
       }
@@ -83,14 +97,17 @@ function HomeScreen() {
     }
   }, []);
 
-  return (
+  return (<>
+    <AssistRequestView visible={assistRequest} onClose={() => {
+      setAssistRequest(false);
+    }} />
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'space-around' }}>
       <Image style={{width: "90%", resizeMode: "stretch"}} source={require("./assets/home-banner1.png")} />
       <Image style={{width: "90%", resizeMode: "stretch"}} source={require("./assets/home-banner2.png")} />
       <Image  style={{width: "100%", height: 300, resizeMode: "stretch"}} source={require("./assets/home-banner-slider.png")} />
       <Image style={{width: "90%", resizeMode: "stretch"}} source={require("./assets/home-banner-iphone.png")} />
     </View>
-  );
+  </>);
 }
 
 const Stack = createStackNavigator();
