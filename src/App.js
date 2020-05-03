@@ -1,9 +1,15 @@
-import * as React from 'react';
+import React, {useEffect} from 'react';
 import { View, Text, StyleSheet, SafeAreaView, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { requestPermission } from './Permissions';
 
 function HomeScreen() {
+  
+  useEffect(() => {
+    requestPermission();
+  }, []);
+
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'space-around' }}>
       <Image style={{width: "90%", resizeMode: "stretch"}} source={require("./assets/home-banner1.png")} />
