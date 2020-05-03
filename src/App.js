@@ -4,14 +4,19 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { requestPermission } from './Permissions';
 import SystemSetting from "react-native-system-setting";
+import Spinner from "react-native-spinkit";
 
 import Voice from '@react-native-community/voice';
 
-const AssistRequestView = ({visible, onClose}) => {
+const AssistRequestView = ({visible, onClose, speaking}) => {
 
-  return <Modal visible={visible} transparent={true}>
+  return <Modal animationType="fade" visible={visible} transparent={true}>
     <View style={{flex: 1, backgroundColor: "rgba(0,0,0,.90)", justifyContent: "center", alignItems: "center"}}>
-      <Image source={require("./assets/assistente-logo.png")} />
+      <View style={{justifyContent: "center", alignItems: "center", height: 250}}>
+        <Spinner style={{position: "absolute"}}  isVisible={speaking} size={200} type="Pulse" color="red"/>
+        <Spinner isVisible={speaking} size={150} type="Bounce" color="red"/>
+        <Image style={{position: "absolute"}} source={require("./assets/assistente-logo.png")} />
+      </View>
       <TouchableOpacity onPress={onClose} style={{padding: 20}}>
         <Text style={{color: "white"}}>Fechar</Text>
       </TouchableOpacity>
@@ -21,6 +26,7 @@ const AssistRequestView = ({visible, onClose}) => {
 
 function HomeScreen() {
   const [assistRequest, setAssistRequest] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
   
   useEffect(() => {
     let interval1, interval2, timeout;
@@ -44,8 +50,9 @@ function HomeScreen() {
         e.value.forEach(v => {
           console.log( "XABLAU", v);
           if (v.toLowerCase() === "olá americanas") {
-            alert("Match!");
             setAssistRequest(true);
+            setSpeaking(true);
+            setTimeout(() => {setSpeaking(false)}, 10000)
           }
         });
       }
@@ -98,7 +105,7 @@ function HomeScreen() {
   }, []);
 
   return (<>
-    <AssistRequestView visible={assistRequest} onClose={() => {
+    <AssistRequestView speaking={speaking} visible={assistRequest} onClose={() => {
       setAssistRequest(false);
     }} />
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'space-around' }}>
