@@ -4,10 +4,67 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { requestPermission } from './Permissions';
 
+import Voice from '@react-native-community/voice';
+
 function HomeScreen() {
   
   useEffect(() => {
     requestPermission();
+
+    Voice.getSpeechRecognitionServices().then((e) => console.log("getSpeechRecognitionServices", e));
+
+    Voice.onSpeechStart = (e) => {
+      console.log("onSpeechStart", e);
+    };
+
+    Voice.onSpeechEnd = (e) => {
+      console.log("onSpeechEnd", e);
+      setTimeout( () => Voice.start("pt-BR"), 500);
+    };
+    
+    Voice.onSpeechResults = (e) => {
+      console.log("onSpeechResults", e);
+    };
+
+    Voice.onSpeechPartialResults = (e) => {
+      console.log("onSpeechPartialResults", e);
+    }
+    
+    Voice.onSpeechRecognized = (e) => {
+      console.log("onSpeechRecognized", e);
+    }
+    
+    Voice.onSpeechVolumeChanged = (e) => {
+      console.log("onSpeechVolumeChanged", e);
+    }
+
+    // let interval, timeout;
+
+    // interval = setInterval(() => {
+    //   Voice.isRecognizing().then((isRecognizing) => {
+    //     if (!isRecognizing) {
+    //       console.log("Start voice...");
+    //       Voice.start("pt-BR");
+    //       timeout = setTimeout(() => {
+    //         console.log("Stop voice...");
+    //         Voice.stop();
+    //       },9000);
+    //     } else {
+    //       console.log("Recognizing yet...");
+    //     }
+    //   });
+    // }, 10000);
+
+    Voice.start("pt-BR");
+
+    return () => {
+      console.log("AQUI!");
+      // if (timeout) clearTimeout(timeout);
+      // if (interval) clearInterval(interval);
+      Voice.stop();
+      Voice.removeAllListeners();
+      Voice.destroy();
+    }
   }, []);
 
   return (
