@@ -23,24 +23,24 @@ function debounce(func, wait, immediate) {
 	};
 }
 
-const mockProduct = {
-  twilio: { 'custom.americanas-voice': {} },
-  produto: { product_label: 'Undefined' },
-  result_list: [
-    {
-      id: '1216852579',
-      image: 'https://images-americanas.b2w.io/produtos/01/00/img/1216852/5/1216852587P1.jpg',
-      name: 'Undefined',
-      price: 1.99
-    },
-    {
-      id: '88531303',
-      image: 'https://images-americanas.b2w.io/produtos/01/00/img3/88531/3/88531301P1.jpg',
-      name: 'Undefined',
-      price: 1.99
-    }
-  ]
-};
+// const mockProduct = {
+//   twilio: { 'custom.americanas-voice': {} },
+//   produto: { product_label: 'Undefined' },
+//   result_list: [
+//     {
+//       id: '1216852579',
+//       image: 'https://images-americanas.b2w.io/produtos/01/00/img/1216852/5/1216852587P1.jpg',
+//       name: 'Undefined',
+//       price: 1.99
+//     },
+//     {
+//       id: '88531303',
+//       image: 'https://images-americanas.b2w.io/produtos/01/00/img3/88531/3/88531301P1.jpg',
+//       name: 'Undefined',
+//       price: 1.99
+//     }
+//   ]
+// };
 
 const Product = ({imageUrl, label, price}) => (<View style={{backgroundColor: "white", paddingHorizontal: 40, paddingVertical: 20, borderRadius: 10}}>
   <Image source={{uri: imageUrl}} style={{width: 200, height: 200, marginBottom: 10}} />
@@ -101,7 +101,7 @@ SystemSetting.setVolume(0);
 function HomeScreen() {
   const [assistRequest, setAssistRequest] = useState(false);
   const [speaking, setSpeaking] = useState(false);
-  const [item, setItem] = useState(mockProduct);
+  const [item, setItem] = useState(undefined);
 
   useEffect(() => {
     Voice.onSpeechStart = (e) => {
@@ -148,6 +148,10 @@ function HomeScreen() {
                 assistState = 2;
                 SystemSetting.setVolume(0);
               }, 10000);
+            }
+            
+            if (current_task === "add_wishlist" && memoryParsed && memoryParsed.produto) {
+              setItem(memoryParsed);
             }
 
             console.log(`>>>>>>>>>>>\n\n${JSON.stringify(says)}\n${current_task}\n${JSON.stringify(memoryParsed)}\n\n>>>>>>>>>>>>>>`);
