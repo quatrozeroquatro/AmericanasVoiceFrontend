@@ -3,12 +3,15 @@ import { View, Text, StyleSheet, SafeAreaView, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { requestPermission } from './Permissions';
+import SystemSetting from "react-native-system-setting";
 
 import Voice from '@react-native-community/voice';
 
 function HomeScreen() {
   
   useEffect(() => {
+    let interval1, interval2, timeout;
+
     requestPermission();
 
     Voice.getSpeechRecognitionServices().then((e) => console.log("getSpeechRecognitionServices", e));
@@ -19,11 +22,19 @@ function HomeScreen() {
 
     Voice.onSpeechEnd = (e) => {
       console.log("onSpeechEnd", e);
-      setTimeout( () => Voice.start("pt-BR"), 500);
+      // setTimeout(() => SystemSetting.setVolume(1), 500);
     };
     
     Voice.onSpeechResults = (e) => {
-      console.log("onSpeechResults", e);
+      console.log("\n\n\nonSpeechResults", e, "\n\n\n\n");
+      if (e.value && e.value.length > 0) {
+        e.value.forEach(v => {
+          console.log( "XABLAU", v);
+          if (v.toLowerCase() === "olá americanas") {
+            alert("Match!");
+          }
+        });
+      }
     };
 
     Voice.onSpeechPartialResults = (e) => {
@@ -38,29 +49,34 @@ function HomeScreen() {
       console.log("onSpeechVolumeChanged", e);
     }
 
-    // let interval, timeout;
-
-    // interval = setInterval(() => {
-    //   Voice.isRecognizing().then((isRecognizing) => {
-    //     if (!isRecognizing) {
-    //       console.log("Start voice...");
-    //       Voice.start("pt-BR");
+    interval1 = setInterval(() => {
+      Voice.isRecognizing().then((isRecognizing) => {
+        if (!isRecognizing) {
+          console.log("Start voice...");
+          // SystemSetting.setVolume(0);
+          Voice.start("pt-BR")
     //       timeout = setTimeout(() => {
     //         console.log("Stop voice...");
     //         Voice.stop();
     //       },9000);
-    //     } else {
-    //       console.log("Recognizing yet...");
-    //     }
-    //   });
-    // }, 10000);
+        } else {
+          console.log("Recognizing yet...");
+        }
+      });
+    }, 1000);
+
+    interval2 = setInterval(() => {
+      Voice.stop();
+    }, 10000);
 
     Voice.start("pt-BR");
+    SystemSetting.setVolume(0);
 
     return () => {
       console.log("AQUI!");
       // if (timeout) clearTimeout(timeout);
-      // if (interval) clearInterval(interval);
+      if (interval1) clearInterval(interval1);
+      if (interval2) clearInterval(interval2);
       Voice.stop();
       Voice.removeAllListeners();
       Voice.destroy();
