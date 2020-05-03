@@ -5,8 +5,10 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { requestPermission } from './Permissions';
 import SystemSetting from "react-native-system-setting";
 import Spinner from "react-native-spinkit";
-
+import Tts from 'react-native-tts';
 import Voice from '@react-native-community/voice';
+
+Tts.setDefaultLanguage('pt-BR');
 
 const AssistRequestView = ({ visible, onClose, speaking }) => {
 
@@ -53,6 +55,8 @@ const stopVoiceFlow = () => {
   setTimeout(() => SystemSetting.setVolume(1), 800);
 }
 
+let controleFlow = true;
+
 function HomeScreen() {
   const [assistRequest, setAssistRequest] = useState(false);
   const [speaking, setSpeaking] = useState(false);
@@ -69,14 +73,21 @@ function HomeScreen() {
     Voice.onSpeechResults = (e) => {
       console.log("\n\n\nonSpeechResults", e, "\n\n\n\n");
       if (e.value && e.value.length > 0) {
-        e.value.forEach(v => {
+        e.value.some(v => {
           console.log("XABLAU", v);
           if (v.toLowerCase() === "olá americanas") {
             stopVoiceFlow();
 
             setAssistRequest(true);
             setSpeaking(true);
-            setTimeout(() => { setSpeaking(false) }, 10000)
+            setTimeout( () => {
+              if (controleFlow) {
+                Tts.speak('Olá! Como eu posso te ajudar?')
+              }
+              controleFlow = false;
+            }, 900 );
+            setTimeout(() => { setSpeaking(false) }, 10000);
+            return true;
           }
         });
       }
@@ -113,6 +124,7 @@ function HomeScreen() {
       setAssistRequest(false);
       setSpeaking(false);
       startVoiceFlow();
+      controleFlow = true;
     }} />
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'space-around' }}>
       <Image style={{ width: "90%", resizeMode: "stretch" }} source={require("./assets/home-banner1.png")} />
