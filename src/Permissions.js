@@ -5,23 +5,19 @@ export const requestPermission = () => {
         .then((result) => {
             switch (result) {
                 case RESULTS.UNAVAILABLE:
-                    console.log(
-                        'This feature is not available (on this device / in this context)',
-                    );
+                    console.log('[DEBUG React Permission] This feature is not available (on this device / in this context)',);
                     break;
                 case RESULTS.DENIED:
-                    console.log(
-                        'The permission has not been requested / is denied but requestable',
-                    );
+                    console.log('[DEBUG React Permission] The permission has not been requested / is denied but requestable',);
                     request(PERMISSIONS.ANDROID.RECORD_AUDIO).then((result) => {
-                        console.log("Permission Requested: ", result);
-                      });
+                        console.log("[DEBUG React Permission] Permission Requested: ", result);
+                    });
                     break;
                 case RESULTS.GRANTED:
-                    console.log('The permission is granted');
+                    console.log('[DEBUG React Permission] The permission is granted');
                     break;
                 case RESULTS.BLOCKED:
-                    console.log('The permission is denied and not requestable anymore');
+                    console.log('[DEBUG React Permission] The permission is denied and not requestable anymore');
                     break;
             }
         })
