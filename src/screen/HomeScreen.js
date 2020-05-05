@@ -9,6 +9,8 @@ import { requestPermission } from '../Permissions';
 import { debounce } from '../Utils';
 import { americanasVoiceSay } from '../ApiService';
 
+import SplashScreen from "react-native-splash-screen";
+
 // const mockProduct = {
 //   twilio: { 'custom.americanas-voice': {} },
 //   produto: { product_label: 'Undefined' },
@@ -65,6 +67,9 @@ export default () => {
   const [list, setList] = useState(undefined);
 
   useEffect(() => {
+
+    SplashScreen.hide();
+
     Voice.onSpeechStart = (e) => {
       console.log("[DEBUG HomeScreen] onSpeechStart", e);
     };
